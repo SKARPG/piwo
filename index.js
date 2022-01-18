@@ -1,6 +1,5 @@
 const { Client, Intents } = require('discord.js');
-
-const TOKEN = "OTEzODI4NjE2MTA0NzM0NzYw.YaELOA.vxuVsYpgjTGdN4HQkKpuR_LSMbE";
+require('dotenv').config();
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -39,6 +38,10 @@ const reloadCollectors = () => {
 			collectors.forEach((collector) => { collector.stop(); });
 			collectors = [];
 			channels.forEach((channel) => {
+				if(channel.name.includes("dlabota")){
+					console.log(channel);
+					channel.send("piwo");
+				}
 				const filter = messageFilter;
 				const collector = channel.createMessageCollector({ filter});
 				collector.on('collect', (msg) => {
@@ -60,4 +63,9 @@ client.once('ready', async () => {
 });
 
 // Login to Discord with your client's token
-client.login(TOKEN);
+if(!process.env.TOKEN){
+	console.log("No token loaded. Check your .env file config");
+	return;
+}
+
+client.login(process.env.TOKEN);
